@@ -1,0 +1,9 @@
+node_modules
+dist
+tests
+*.test.ts
+*.test.tsx
+.env
+.env.*
+!.env.example
+npm-debug.log

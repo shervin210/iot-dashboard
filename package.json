@@ -1,0 +1,28 @@
+{
+  "name": "iot-monitoring-dashboard",
+  "private": true,
+  "version": "1.0.0",
+  "packageManager": "yarn@4.10.3",
+  "engines": {
+    "node": ">=22.0.0",
+    "yarn": ">=4.0.0"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:backend": "yarn workspace backend dev",
+    "dev:frontend": "yarn workspace frontend dev",
+    "dev": "yarn workspaces foreach -p --from backend --from frontend run dev",
+    "build": "yarn workspace backend build && yarn workspace frontend build",
+    "build:backend": "yarn workspace backend build",
+    "build:frontend": "yarn workspace frontend build",
+    "test": "yarn workspace backend test && yarn workspace frontend test",
+    "test:backend": "yarn workspace backend test",
+    "test:frontend": "yarn workspace frontend test",
+    "typecheck": "yarn workspace backend exec tsc -p tsconfig.json --noEmit && yarn workspace frontend exec tsc --noEmit",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down"
+  }
+}

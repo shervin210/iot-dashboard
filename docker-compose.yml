@@ -1,0 +1,37 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: iot-backend
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      # Same-origin in this compose setup (nginx proxies same-origin
+      # to the browser), but kept configurable for running the
+      # backend standalone against a different frontend origin.
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+      DEVICE_COUNT: ${DEVICE_COUNT:-100}
+      TICK_INTERVAL_MS: ${TICK_INTERVAL_MS:-1500}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  frontend:
+    build:
+      # The frontend build needs the workspace root (yarn.lock and the
+      # root package.json workspaces) to resolve dependencies, so the
+      # build context is the monorepo root rather than ./frontend.
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: iot-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
